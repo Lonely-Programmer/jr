@@ -1,0 +1,137 @@
+<html>
+
+<style type="text/css">
+.base{
+	margin: 0;
+	padding: 0;
+    position: absolute;
+    left: 10px;
+    top: 10px
+}
+.on{
+	position: absolute;
+	width: 100px;
+	height: 100px;
+    left: 158px;
+	top: 224px;
+    color: white;
+    font-size: 50px;
+	background-color: black;
+
+    -moz-user-select: none;
+    -o-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+.off{
+	position: absolute;
+	width: 100px;
+	height: 100px;
+    left: 155px;
+	top: 350px;
+    color: white;
+    font-size: 50px;
+	background-color: red;
+
+    -moz-user-select: none;
+    -o-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+.tmp{
+    position: absolute;
+    left: 150px;
+	top: 600px;
+    font-size: 50px;
+}
+</style>
+
+<script type="text/javascript">
+    var state = 0;
+    var cancel_id;
+    var audio;
+    var audio_on;
+    var audio_off;
+    var audio_ban;
+    var label;
+    var zselect;
+    var bango = 5;
+
+    function zload()
+    {
+        audio = document.getElementById("player");
+        audio_on = document.getElementById("player_on");
+        audio_off = document.getElementById("player_off");
+        audio_ban = document.getElementById("player_ban");
+        label = document.getElementById("label");
+
+        zselect = document.getElementById("musics");
+        audio.onended = function() 
+        {
+            zselect.disabled = false;
+        };
+        change_music();
+    }
+
+    function turn_on()
+    {
+        if(state > 0) return;
+        clearTimeout(cancel_id);
+        audio_ban.pause();
+        zselect.disabled = true;
+        audio.currentTime = 0;
+        state = 1;
+        label.textContent = "ON";
+        audio_on.play();
+        cancel_id = setTimeout("audio.play()",400);
+    }
+
+    function turn_off()
+    {
+        if(state == 0) return;
+        clearTimeout(cancel_id);
+        audio.pause();
+        zselect.disabled = false;
+        audio_ban.currentTime = 0;
+        state = 0;
+        label.textContent = "OFF";
+        audio_off.play();
+        cancel_id = setTimeout("audio_ban.play()",400);
+    }
+
+    function change_music()
+    {
+        //audio.src = x.options[x.options.selectedIndex].text;
+        var dat = zselect.value.split("&");
+        audio.src = dat[0];
+        audio_ban.src = "bansen" + dat[1] + ".mp3";
+    }
+
+</script>
+
+<body onload="zload()">
+<img class="base" src="base.jpg" />
+<p class="on" onmousedown="turn_on()" ontouchstart="turn_on()">ON</p>
+<p class="off" onmousedown="turn_off()" ontouchstart="turn_off()">OFF</p>
+<audio id="player" style="display:none;" controls="controls" src="ikebukuro.mp3"></audio>
+<audio id="player_on" style="display:none;" controls="controls" src="on.mp3"></audio>
+<audio id="player_off" style="display:none;" controls="controls" src="off.mp3"></audio>
+<audio id="player_ban" style="display:none;" controls="controls" src="bansen5.mp3"></audio>
+<p class="tmp" id="label">OFF</p>
+<form class="tmp">
+    <select name="tone" id="musics" onchange="change_music(this)">
+        <option value="akihabara1.mp3&1f">秋叶原1</option>
+        <option value="akihabara3.mp3&3m">秋叶原3</option>
+        <option value="ikebukuro5.mp3&5f" selected="selected">池袋5</option>
+        <option value="hiratuka1.mp3&1m">平塚1</option>
+        <option value="etchujima.mp3&1f">越中岛1</option>
+        <option value="osaki1.mp3&1f">大崎1</option>
+        <option value="osaki3.mp3&3m">大崎3</option>
+    </select>
+</form>
+</body>
+</html>
